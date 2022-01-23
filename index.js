@@ -13,6 +13,10 @@ app.use(cors());
 app.use(express.json());
 
 //Routes
+
+app.get("/", (req, res) => {
+  res.json({ message: "It's working..." });
+});
 app.use("/api/v1", require("./routes/index"));
 
 const port = process.env.PORT;
