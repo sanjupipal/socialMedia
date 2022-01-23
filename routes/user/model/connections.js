@@ -1,13 +1,12 @@
 const { Sequelize, DataTypes } = require("sequelize");
-const { UUID } = require("uuid");
 const connection = {
   following: {
-    type: DataTypes.UUID,
+    type: DataTypes.INTEGER,
     allowNull: false,
     required: true,
   },
   user: {
-    type: DataTypes.UUID,
+    type: DataTypes.INTEGER,
     allowNull: false,
     required: true,
   },

@@ -8,11 +8,6 @@ const { Sequelize } = require("sequelize");
     .then(() => {
       let { users, connection, post, postLikes, postComments } = db.models;
 
-      users.hasMany(connection, { foreignKey: "following", targetKey: "_id" });
-      // connection.belongsTo(users, {
-      //   foreignKey: "following",
-      // });
-
       post.hasMany(postLikes, { foreignKey: "post_id" });
       postLikes.belongsTo(post, {
         foreignKey: "post_id",

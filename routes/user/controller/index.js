@@ -1,13 +1,11 @@
-const { v4: uuid } = require("uuid");
 let db = app.sequelize.models;
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const validate = require("uuid-validate");
 const { QueryTypes } = require("sequelize");
 
 const getUsers = async (req, res) => {
   try {
-    let data = await db.users.findAll({ attributes: ["name", "email", "_id"] });
+    let data = await db.users.findAll({ attributes: ["name", "email", "id"] });
     return res.status(200).json(data);
   } catch (error) {
     console.log(error);
@@ -18,14 +16,14 @@ const getUsers = async (req, res) => {
 const getUser = async (req, res) => {
   try {
     let data = await app.sequelize.query(
-      `select users._id, 
-sum(case when u1.user is null then 0 else 1 end) as followers,
-sum(case when u2.following is null then 0 else 1 end) as following
+      `select users.id, 
+sum(case when u1.user is null then 0 else 1 end) as following,
+sum(case when u2.following is null then 0 else 1 end) as followers
 from public.users as users
-left join public.connections as u1 on u1.user = users._id
-left join public.connections as u2 on u2.following = users._id
-where users._id = '${req.decoded._id}'
-group by users._id`,
+left join public.connections as u1 on u1.user = users.id
+left join public.connections as u2 on u2.following = users.id
+where users.id = '${req.decoded.id}'
+group by users.id`,
       { type: QueryTypes.SELECT }
     );
 
@@ -39,7 +37,6 @@ group by users._id`,
 const createUser = async (req, res) => {
   try {
     let {} = req.body;
-    req.body._id = uuid();
     const saltRounds = 10;
     let salt = await bcrypt.genSalt(saltRounds);
     let hashedPass = await bcrypt.hash(req.body.password, salt);
@@ -61,14 +58,11 @@ const addConnection = async (req, res) => {
   try {
     let { id } = req.params;
 
-    if (!validate(id, 4))
-      return res.status(200).json({ msg: "Invalid follow id" });
-
-    let following = await db.users.findOne({ where: { _id: id } });
+    let following = await db.users.findOne({ where: { id } });
     if (!following) return res.status(200).json({ msg: "Invalid follow id" });
 
     let obj = {
-      user: req.decoded._id,
+      user: req.decoded.id,
       following: id,
     };
 
@@ -85,14 +79,11 @@ const removeConnection = async (req, res) => {
   try {
     let { id } = req.params;
 
-    if (!validate(id, 4))
-      return res.status(200).json({ msg: "Invalid follow id" });
-
-    let following = await db.users.findOne({ where: { _id: id } });
+    let following = await db.users.findOne({ where: { id } });
     if (!following) return res.status(200).json({ msg: "Invalid follow id" });
 
     let obj = {
-      user: req.decoded._id,
+      user: req.decoded.id,
       following: id,
     };
 

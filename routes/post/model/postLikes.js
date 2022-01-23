@@ -1,17 +1,12 @@
 const { Sequelize, DataTypes } = require("sequelize");
-const { UUID } = require("uuid");
 const post = {
-  _id: {
-    type: DataTypes.UUID,
-    primary: true,
-    defaultValue: DataTypes.UUIDV4,
-  },
   post_id: {
-    type: DataTypes.UUID,
-    defaultValue: UUID,
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    required: true,
   },
   user_id: {
-    type: DataTypes.UUID,
+    type: DataTypes.INTEGER,
     allowNull: false,
     required: true,
   },

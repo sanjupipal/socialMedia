@@ -1,10 +1,8 @@
 const { Sequelize, DataTypes } = require("sequelize");
-const { UUID } = require("uuid");
 const user = {
-  _id: {
-    type: DataTypes.UUID,
-    primaryKey: true,
-    defaultValue: UUID,
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
   },
   name: {
     type: DataTypes.STRING,
@@ -24,7 +22,7 @@ app.sequelize.define("users", user, {
   indexes: [
     {
       unique: true,
-      fields: ["email"],
+      fields: ["email", "id"],
     },
   ],
 });
